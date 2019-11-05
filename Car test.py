@@ -30,15 +30,19 @@ def create_model():
               metrics=['accuracy'])
     return model
 
-checkpoint_path = "training_Car/cp-{epoch:04d}.ckpt"
+checkpoint_path = "Car count/training_Car/cp-{epoch:04d}.ckpt"
 checkpoint_dir = os.path.dirname(checkpoint_path)
+cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
+                                                 save_weights_only=True,
+                                                 verbose=1)
 
 model = create_model()
 model.summary()
 
 model.fit(train_images, train_labels, epochs=10, 
-                    validation_data=(test_images, test_labels))
-model.save_weights(checkpoint_path.format(epoch=10))
+                    validation_data=(test_images, test_labels),
+                    callbacks=[cp_callback])
+#model.save_weights(checkpoint_path.format(epoch=10))
 
 test_loss, test_accuracy = model.evaluate(test_images, test_labels)
 print ("Loss: " + str(test_loss) + "\nAccuracy: " + str(test_accuracy*100))
